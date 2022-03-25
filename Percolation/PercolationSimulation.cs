@@ -29,7 +29,13 @@ namespace Percolation
 
         public double PercolationValue(int size)
         {
-            throw new NotImplementedException();
+            Random aleatoire = new Random();
+            do
+            {
+                //int ligne = aleatoire.Next(0, size);
+                //int colonne = aleatoire.Next(0, size);
+                //(ligne, colonne);
+            } while (true);
         }
     }
 }

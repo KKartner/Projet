@@ -27,22 +27,42 @@ namespace Percolation
 
         private bool IsOpen(int i, int j)
         {
-            throw new NotImplementedException();
+            if (_open[i, j] == true)
+            {
+                return true;
+            }
+            return false;
         }
 
         private bool IsFull(int i, int j)
         {
-            throw new NotImplementedException();
+            if (_full[i, j] == true)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool Percolate()
+        {
+            for (int i = 0; i < _size; i++)
+            {
+                if (IsOpen(_size-1, i))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private List<KeyValuePair<int, int>> CloseNeighbors(int i, int j)
         {
-            throw new NotImplementedException();
+            return new List<KeyValuePair<int, int>>();
         }
 
-        private void Open(int i, int j)
+        public void Open(int i, int j)
         {
-            throw new NotImplementedException();
+            _open[i, j] = true;
         }
     }
 }
