@@ -57,7 +57,16 @@ namespace Percolation
 
         private List<KeyValuePair<int, int>> CloseNeighbors(int i, int j)
         {
-            throw new NotImplementedException();
+            if (i == j || (i == _size && j == 0) || (i == 0 && j == _size)) // Les coins de la grille
+            {
+
+            }
+            else 
+            {
+
+            }
+
+            return new List<KeyValuePair<int, int>>();
         }
 
         public void Open(int i, int j)
