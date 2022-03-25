@@ -30,12 +30,16 @@ namespace Percolation
         public double PercolationValue(int size)
         {
             Random aleatoire = new Random();
+            Percolation grille = new Percolation(size);
+            double caseOuvert = 0;
             do
             {
-                //int ligne = aleatoire.Next(0, size);
-                //int colonne = aleatoire.Next(0, size);
-                //(ligne, colonne);
-            } while (true);
-        }
+                int ligne = aleatoire.Next(0, size);
+                int colonne = aleatoire.Next(0, size);
+                grille.Open(ligne, colonne);
+                caseOuvert++;
+            } while (!grille.Percolate());
+            return caseOuvert / (size * size);   
+        }       
     }
 }
