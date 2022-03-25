@@ -57,7 +57,7 @@ namespace Percolation
 
         private List<KeyValuePair<int, int>> CloseNeighbors(int i, int j)
         {
-            return new List<KeyValuePair<int, int>>();
+            throw new NotImplementedException();
         }
 
         public void Open(int i, int j)
