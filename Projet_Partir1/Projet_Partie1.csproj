@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{2A65DA69-234F-4708-BCBB-CE9787B8F11B}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Projet_Partir1</RootNamespace>
-    <AssemblyName>Projet_Partir1</AssemblyName>
+    <RootNamespace>Projet_Partie1</RootNamespace>
+    <AssemblyName>Projet_Partie1</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
