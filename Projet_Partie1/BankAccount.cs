@@ -21,6 +21,8 @@ namespace Projet_Partie1
             List<string> destinaite = new List<string>();
             List<string> expediteur = new List<string>();
 
+            List<string> sorties = new List<string>();
+
             using (StreamReader sr = new StreamReader(transsactionFile))
             {
                 string lines;
@@ -60,7 +62,7 @@ namespace Projet_Partie1
                 }
                 else if (expediteur[i] == "0" && comptes.ContainsKey(destinaite[i])) // Faire Retrait
                 {
-                    if (GiveMoney(comptes[destinaite[i]] ,montantTransaction[i]))
+                    if (GiveMoney(comptes[destinaite[i]], montantTransaction[i]))
                     {
                         sortie += ";OK";
                         float result = 0;
@@ -75,7 +77,7 @@ namespace Projet_Partie1
                 }
                 else
                 {
-                    float result = 0; 
+                    float result = 0;
                     comptes.TryGetValue(destinaite[i], out result);
                     if (result > montantTransaction[i] && montantTransaction[i] > 0 && comptes.ContainsKey(destinaite[i]) && comptes.ContainsKey(expediteur[i]))
                     {
@@ -92,13 +94,17 @@ namespace Projet_Partie1
                         sortie += ";KO";
                     }
                 }
-                using (StreamWriter sw = new StreamWriter(outputFile, true))
-                {
-                    sw.WriteLine(sortie);
-                }
+                sorties.Add(sortie);
             }
 
+            using (StreamWriter sw = new StreamWriter(outputFile))
+            {
+                foreach (string sortie in sorties)
+                {
+                    sw.WriteLine(sortie);
 
+                }
+            }
         }
 
         public bool StockMoney(float montant)
