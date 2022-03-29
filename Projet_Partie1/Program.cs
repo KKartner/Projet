@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,8 @@ namespace Projet_Partie1
             string trxnPath = path + @"\Transactions_1.txt";
             string sttsPath = path + @"\Statut_1.txt";
 
-            
+            BankAccount account = new BankAccount();
+            account.TransactionsAccounts(acctPath, trxnPath, sttsPath);
 
             // Keep the console window open
             Console.WriteLine("Press any key to exit.");
