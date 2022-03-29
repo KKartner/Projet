@@ -44,11 +44,11 @@ namespace Projet_Partie1
                 //Console.WriteLine($"{nbTransaction[i]} {montantTransaction[i]} {destinaite[i]} {expediteur[i]}");
                 string sortie = "";
                 sortie = nbTransaction[i];
-                if (destinaite[i] == "0") // Faire Depot
+                if (destinaite[i] == "0" && comptes.ContainsKey(expediteur[i])) // Faire Depot
                 {
                     if (StockMoney(montantTransaction[i]))
                     {
-                        sortie += " OK";
+                        sortie += ";OK";
                         float result = 0;
                         comptes.TryGetValue(expediteur[i], out result);
                         result += montantTransaction[i];
@@ -56,14 +56,14 @@ namespace Projet_Partie1
                     }
                     else
                     {
-                        sortie += " KO";
+                        sortie += ";KO";
                     }
                 }
-                else if (expediteur[i] == "0") // Faire Retrait
+                else if (expediteur[i] == "0" && comptes.ContainsKey(destinaite[i])) // Faire Retrait
                 {
                     if (GiveMoney(comptes[destinaite[i]] ,montantTransaction[i]))
                     {
-                        sortie += " OK";
+                        sortie += ";OK";
                         float result = 0;
                         comptes.TryGetValue(destinaite[i], out result);
                         result -= montantTransaction[i];
@@ -71,16 +71,16 @@ namespace Projet_Partie1
                     }
                     else
                     {
-                        sortie += " KO";
+                        sortie += ";KO";
                     }
                 }
                 else
                 {
                     float result = 0; 
                     comptes.TryGetValue(destinaite[i], out result);
-                    if (result > montantTransaction[i])
+                    if (result > montantTransaction[i] && comptes.ContainsKey(destinaite[i]) && comptes.ContainsKey(expediteur[i]))
                     {
-                        sortie += " OK";
+                        sortie += ";OK";
                         float somme = 0;
                         comptes.TryGetValue(expediteur[i], out somme);
                         somme += montantTransaction[i];
@@ -90,12 +90,8 @@ namespace Projet_Partie1
                     }
                     else
                     {
-                        sortie += " KO";
+                        sortie += ";KO";
                     }
-                }
-                foreach  (KeyValuePair<string, float> t in comptes)
-                {
-                    sortie += " " + t.Value;
                 }
                 using (StreamWriter sw = new StreamWriter(outputFile, true))
                 {
