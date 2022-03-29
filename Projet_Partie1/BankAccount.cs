@@ -10,6 +10,7 @@ namespace Projet_Partie1
     public class BankAccount
     {
         private const int MontantMaxTrans = 1000;
+        private Dictionary<string, float> historique;
 
         public void TransactionsAccounts(string inputFile, string transsactionFile, string outputFile)
         {
@@ -19,8 +20,6 @@ namespace Projet_Partie1
             List<float> montantTransaction = new List<float>();
             List<string> destinaite = new List<string>();
             List<string> expediteur = new List<string>();
-
-            Dictionary<string, float> historique = new Dictionary<string, float>();
 
             using (StreamReader sr = new StreamReader(transsactionFile))
             {
@@ -78,7 +77,7 @@ namespace Projet_Partie1
                 {
                     float result = 0; 
                     comptes.TryGetValue(destinaite[i], out result);
-                    if (result > montantTransaction[i] && comptes.ContainsKey(destinaite[i]) && comptes.ContainsKey(expediteur[i]))
+                    if (result > montantTransaction[i] && montantTransaction[i] > 0 && comptes.ContainsKey(destinaite[i]) && comptes.ContainsKey(expediteur[i]))
                     {
                         sortie += ";OK";
                         float somme = 0;
@@ -132,14 +131,17 @@ namespace Projet_Partie1
                     float solde = 0;
                     if (float.TryParse(line[1].Replace('.', ','), out solde))
                     {
-                        if (solde > 0)
+                        if (solde >= 0 && !comptes.ContainsKey(line[0]))
                         {
                             comptes.Add(line[0], solde);
                         }
                     }
                     else
                     {
-                        comptes.Add(line[0], 0);
+                        if (!comptes.ContainsKey(line[0]))
+                        {
+                            comptes.Add(line[0], 0);
+                        }
                     }
                 }
             }
