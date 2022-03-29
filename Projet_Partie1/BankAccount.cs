@@ -42,57 +42,64 @@ namespace Projet_Partie1
 
             for (int i = 0; i < nbTransaction.Count; i++)
             {
-                //Console.WriteLine($"{nbTransaction[i]} {montantTransaction[i]} {destinaite[i]} {expediteur[i]}");
                 string sortie = "";
                 sortie = nbTransaction[i];
-                if (destinaite[i] == "0" && comptes.ContainsKey(expediteur[i])) // Faire Depot
+                if (!sorties.Any(x => x.StartsWith(nbTransaction[i] + ";"))) // Verification des transactions déjà réaliser
                 {
-                    if (StockMoney(montantTransaction[i]))
+                    if (destinaite[i] == "0" && comptes.ContainsKey(expediteur[i])) // Action à réaliser: Depot
                     {
-                        sortie += ";OK";
-                        float result = 0;
-                        comptes.TryGetValue(expediteur[i], out result);
-                        result += montantTransaction[i];
-                        comptes[expediteur[i]] = result;
+                        if (DepositeMoney(montantTransaction[i]))
+                        {
+                            sortie += ";OK";
+                            float result = 0;
+                            comptes.TryGetValue(expediteur[i], out result);
+                            result += montantTransaction[i];
+                            comptes[expediteur[i]] = result;
+                        }
+                        else
+                        {
+                            sortie += ";KO";
+                        }
+                    }
+                    else if (expediteur[i] == "0" && comptes.ContainsKey(destinaite[i])) // Action à réaliser: Retrait
+                    {
+                        if (TakeBackMoney(comptes[destinaite[i]], montantTransaction[i]))
+                        {
+                            sortie += ";OK";
+                            float result = 0;
+                            comptes.TryGetValue(destinaite[i], out result);
+                            result -= montantTransaction[i];
+                            comptes[destinaite[i]] = result;
+                        }
+                        else
+                        {
+                            sortie += ";KO";
+                        }
                     }
                     else
                     {
-                        sortie += ";KO";
-                    }
-                }
-                else if (expediteur[i] == "0" && comptes.ContainsKey(destinaite[i])) // Faire Retrait
-                {
-                    if (GiveMoney(comptes[destinaite[i]], montantTransaction[i]))
-                    {
-                        sortie += ";OK";
                         float result = 0;
                         comptes.TryGetValue(destinaite[i], out result);
-                        result -= montantTransaction[i];
-                        comptes[destinaite[i]] = result;
-                    }
-                    else
-                    {
-                        sortie += ";KO";
+                        // Action à réaliser: Virement et Prélèvement
+                        if (result > montantTransaction[i] && montantTransaction[i] > 0 && comptes.ContainsKey(destinaite[i]) && comptes.ContainsKey(expediteur[i]))
+                        {
+                            sortie += ";OK";
+                            float somme = 0;
+                            comptes.TryGetValue(expediteur[i], out somme);
+                            somme += montantTransaction[i];
+                            result -= montantTransaction[i];
+                            comptes[destinaite[i]] = result;
+                            comptes[expediteur[i]] = somme;
+                        }
+                        else
+                        {
+                            sortie += ";KO";
+                        }
                     }
                 }
                 else
                 {
-                    float result = 0;
-                    comptes.TryGetValue(destinaite[i], out result);
-                    if (result > montantTransaction[i] && montantTransaction[i] > 0 && comptes.ContainsKey(destinaite[i]) && comptes.ContainsKey(expediteur[i]))
-                    {
-                        sortie += ";OK";
-                        float somme = 0;
-                        comptes.TryGetValue(expediteur[i], out somme);
-                        somme += montantTransaction[i];
-                        result -= montantTransaction[i];
-                        comptes[destinaite[i]] = result;
-                        comptes[expediteur[i]] = somme;
-                    }
-                    else
-                    {
-                        sortie += ";KO";
-                    }
+                    sortie += ";KO";
                 }
                 sorties.Add(sortie);
             }
@@ -107,7 +114,7 @@ namespace Projet_Partie1
             }
         }
 
-        public bool StockMoney(float montant)
+        public bool DepositeMoney(float montant)
         {
             if (montant > 0)
             {
@@ -116,7 +123,7 @@ namespace Projet_Partie1
             return false;
         }
 
-        public bool GiveMoney(float solde, float montant)
+        public bool TakeBackMoney(float solde, float montant)
         {
             if (montant > 0 && solde >= montant && montant <= MontantMaxTrans)
             {
