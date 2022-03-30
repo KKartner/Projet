@@ -34,7 +34,7 @@ namespace Projet_Partie2
                 string lines;
                 while ((lines = sr.ReadLine()) != null)
                 {
-                    Compte nouveauCompte = new Compte("", DateTime.MinValue, 0);
+                    Compte nouveauCompte = new Compte("", DateTime.MinValue, 0, "");
                     string[] line = lines.Split(';');
 
                     for (int i = 0; i < listeGestionnaire.Count; i++)

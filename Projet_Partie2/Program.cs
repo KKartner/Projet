@@ -40,42 +40,71 @@ namespace Projet_Partie2
             {
                 //Console.WriteLine($"{i}: {lignes[i].Date} type: {lignes[i].Type}");
 
-                string sortie = "";
-                sortie += i;
+                string sortie = $"{lignes[i].Identifiant}";
 
                 switch (lignes[i].Type)
                 {
                     case TypeFichier.Compte:
-                        Compte nouveauCompte = new Compte(lignes[i].Identifiant, lignes[i].Date, lignes[i].Solde);
+                        Compte nouveauCompte = new Compte(lignes[i].Identifiant, lignes[i].Date, lignes[i].Solde, "");
 
                         if (lignes[i].Entree != "0" && lignes[i].Sortie == "0") // Creation d'un compte
                         {
                             Console.WriteLine("Creation d'un compte");
-                            if (!EstPresent(listeComptes, nouveauCompte))
+                            if (!EstPresent(listeComptes, nouveauCompte)
+                                && nouveauCompte.CreationCompte(maListeGestionnaire, lignes[i].Entree))
                             {
-                                if (nouveauCompte.CreationCompte(maListeGestionnaire, lignes[i].Entree))
+                                sortie += ";OK";
+                                nouveauCompte.Appartenance = lignes[i].Entree;
+                                listeComptes.Add(nouveauCompte);
+                            }
+                            else
+                            {
+                                sortie += ";KO";
+                            }
+
+                        }
+                        else if (lignes[i].Entree == "0" && lignes[i].Sortie != "0") // Cloture d'un compte
+                        {
+                            Console.WriteLine("Cloture d'un compte");
+                            if (EstPresent(listeComptes, nouveauCompte)
+                                && nouveauCompte.ClotureCompte(listeComptes, lignes[i].Sortie, lignes[i].Date))
+                            {
+                                sortie += ";OK";
+                                for (int k = 0; k < listeComptes.Count; k++)
                                 {
-                                    sortie += ";OK";
-                                    listeComptes.Add(nouveauCompte);
-                                }
-                                else
-                                {
-                                    sortie += ";KO";
+                                    if (listeComptes[k].Identifiant == lignes[i].Identifiant)
+                                    {
+                                        listeComptes[k].DateCloture = lignes[i].Date;
+                                        break;
+                                    }
                                 }
                             }
                             else
                             {
                                 sortie += ";KO";
                             }
-                            
-                        }
-                        else if (lignes[i].Entree == "0" && lignes[i].Sortie != "0") // Cloture d'un compte
-                        {
-                            Console.WriteLine("Cloture d'un compte");
                         }
                         else if (lignes[i].Entree != "0" && lignes[i].Sortie != "0") // Changement de gestion
                         {
                             Console.WriteLine("Changement de gestion");
+                            if (EstPresent(listeComptes, nouveauCompte)
+                                && nouveauCompte.GestionCompte(maListeGestionnaire, lignes[i].Entree)
+                                && nouveauCompte.GestionCompte(maListeGestionnaire, lignes[i].Sortie))
+                            {
+                                for (int k = 0; k < listeComptes.Count; k++)
+                                {
+                                    if (listeComptes[k].Identifiant == lignes[i].Identifiant)
+                                    {
+                                        listeComptes[k].Appartenance = lignes[i].Sortie;
+                                        break;
+                                    }
+                                }
+                                sortie += ";OK";
+                            }
+                            else
+                            {
+                                sortie += ";KO";
+                            }
                         }
                         else
                         {

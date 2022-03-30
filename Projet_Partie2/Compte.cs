@@ -12,13 +12,15 @@ namespace Projet_Partie2
         public DateTime DateOuverture { get; set; }
         public DateTime DateCloture { get; set; }
         public float Solde { get; set; }
+        public string Appartenance { get; set; }
 
-        public Compte(string identifiant, DateTime date, float solde)
+        public Compte(string identifiant, DateTime date, float solde, string appartenance)
         {
             Identifiant = identifiant;
             DateOuverture = date;
             DateCloture = DateTime.MinValue;
             Solde = solde;
+            Appartenance = appartenance;
         }
 
         public bool CreationCompte(List<Gestionnaire> listeGestionnaire, string identifiantGestionnaire)
@@ -33,18 +35,28 @@ namespace Projet_Partie2
             return false;
         }
 
-        public string ClotureCompte()
+        public bool ClotureCompte(List<Compte> listeCompte, string appartenanceCompte, DateTime dateCloture)
         {
-            string value = "KO";
-
-            return value;
+            for (int i = 0; i < listeCompte.Count; i++)
+            {
+                if (listeCompte[i].Appartenance == appartenanceCompte && listeCompte[i].DateOuverture < dateCloture)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
-        public string GestionCompte()
+        public bool GestionCompte(List<Gestionnaire> listeGestionnaire, string identifiantGestionnaire)
         {
-            string value = "KO";
-
-            return value;
+            for (int i = 0; i < listeGestionnaire.Count; i++)
+            {
+                if (listeGestionnaire[i].Identifiant == identifiantGestionnaire)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
