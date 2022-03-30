@@ -20,5 +20,31 @@ namespace Projet_Partie2
             DateCloture = DateTime.MinValue;
             Solde = solde;
         }
+
+        public bool CreationCompte(List<Gestionnaire> listeGestionnaire, string identifiantGestionnaire)
+        {
+            for (int i = 0; i < listeGestionnaire.Count; i++)
+            {
+                if (listeGestionnaire[i].Identifiant == identifiantGestionnaire)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public string ClotureCompte()
+        {
+            string value = "KO";
+
+            return value;
+        }
+
+        public string GestionCompte()
+        {
+            string value = "KO";
+
+            return value;
+        }
     }
 }

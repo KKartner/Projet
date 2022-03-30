@@ -22,5 +22,25 @@ namespace Projet_Partie2
             Expediteur = expediteur;
             Destinataire = destinataire;
         }
+        public string DeposeArgent()
+        {
+            string value = "KO";
+
+            return value;
+        }
+
+        public string RetirerArgent()
+        {
+            string value = "KO";
+
+            return value;
+        }
+
+        public string VirementPrevelement()
+        {
+            string value = "KO";
+
+            return value;
+        }
     }
 }
