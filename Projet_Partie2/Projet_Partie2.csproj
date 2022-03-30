@@ -48,7 +48,6 @@
     <Compile Include="Gestionnaire.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Statistique.cs" />
     <Compile Include="Transaction.cs" />
     <Compile Include="TypeFichier.cs" />
   </ItemGroup>

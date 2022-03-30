@@ -14,6 +14,8 @@ namespace Projet_Partie2
         public string Expediteur { get; set; }
         public string Destinataire { get; set; }
 
+        private const int MontantMaxTrans = 1000;
+
         public Transaction(string identifiant, DateTime date, float solde, string expediteur, string destinataire)
         {
             Identifiant = identifiant;
@@ -22,25 +24,39 @@ namespace Projet_Partie2
             Expediteur = expediteur;
             Destinataire = destinataire;
         }
-        public string DeposeArgent()
+        public bool DeposeArgent(List<Compte> listeCompte, string numeroCompte, float montant, DateTime dateEffet)
         {
-            string value = "KO";
-
-            return value;
+            for (int i = 0; i < listeCompte.Count; i++)
+            {
+                if (listeCompte[i].Identifiant == numeroCompte)
+                {
+                    if (montant > 0 && listeCompte[i].DateOuverture < dateEffet)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
-        public string RetirerArgent()
+        public bool RetirerArgent(List<Compte> listeCompte, string numeroCompte, float montant, DateTime dateEffet)
         {
-            string value = "KO";
-
-            return value;
+            for (int i = 0; i < listeCompte.Count; i++)
+            {
+                if (listeCompte[i].Identifiant == numeroCompte)
+                {
+                    if (listeCompte[i].DateOuverture < dateEffet && montant > 0 && listeCompte[i].Solde >= montant && montant <= MontantMaxTrans)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
-        public string VirementPrevelement()
+        public bool VirementPrevelement()
         {
-            string value = "KO";
-
-            return value;
+            return false;
         }
     }
 }

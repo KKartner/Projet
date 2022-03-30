@@ -42,14 +42,15 @@ namespace Projet_Partie2
 
                 string sortie = $"{lignes[i].Identifiant}";
 
+                Compte nouveauCompte = new Compte(lignes[i].Identifiant, lignes[i].Date, lignes[i].Solde, "");
+                Transaction nouvelleTransaction = new Transaction(lignes[i].Identifiant, lignes[i].Date, lignes[i].Solde, lignes[i].Entree, lignes[i].Sortie);
+
                 switch (lignes[i].Type)
                 {
                     case TypeFichier.Compte:
-                        Compte nouveauCompte = new Compte(lignes[i].Identifiant, lignes[i].Date, lignes[i].Solde, "");
-
                         if (lignes[i].Entree != "0" && lignes[i].Sortie == "0") // Creation d'un compte
                         {
-                            Console.WriteLine($"{lignes[i].Identifiant} Creation d'un compte");
+                            //Console.WriteLine($"{lignes[i].Identifiant} Creation d'un compte");
                             if (!EstPresent(listeComptes, nouveauCompte)
                                 && nouveauCompte.CreationCompte(maListeGestionnaire, lignes[i].Entree))
                             {
@@ -65,7 +66,7 @@ namespace Projet_Partie2
                         }
                         else if (lignes[i].Entree == "0" && lignes[i].Sortie != "0") // Cloture d'un compte
                         {
-                            Console.WriteLine($"{lignes[i].Identifiant} Cloture d'un compte");
+                            //Console.WriteLine($"{lignes[i].Identifiant} Cloture d'un compte");
                             if (EstPresent(listeComptes, nouveauCompte)
                                 && nouveauCompte.ClotureCompte(listeComptes, lignes[i].Sortie, lignes[i].Date))
                             {
@@ -91,7 +92,7 @@ namespace Projet_Partie2
                         }
                         else if (lignes[i].Entree != "0" && lignes[i].Sortie != "0") // Changement de gestion
                         {
-                            Console.WriteLine($"{lignes[i].Identifiant} Changement de gestion");
+                            //Console.WriteLine($"{lignes[i].Identifiant} Changement de gestion");
                             if (EstPresent(listeComptes, nouveauCompte)
                                 && nouveauCompte.GestionCompte(maListeGestionnaire, lignes[i].Entree)
                                 && nouveauCompte.GestionCompte(maListeGestionnaire, lignes[i].Sortie))
@@ -124,19 +125,96 @@ namespace Projet_Partie2
                         }
                         break;
                     case TypeFichier.Transaction:
-                        Transaction nouvelleTransaction = new Transaction(lignes[i].Identifiant, lignes[i].Date, lignes[i].Solde, lignes[i].Entree, lignes[i].Sortie);
-
                         if (lignes[i].Entree != "0" && lignes[i].Sortie == "0") // Retirer de l'argent
                         {
-                            Console.WriteLine($"{lignes[i].Identifiant} Retirer de l'argent");
+                            //Console.WriteLine($"{lignes[i].Identifiant} Retirer de l'argent");
+                            if (EstPresent(listeComptes, nouveauCompte)
+                                && nouvelleTransaction.RetirerArgent(listeComptes, lignes[i].Sortie, lignes[i].Solde, lignes[i].Date))
+                            {
+                                bool trouver = false;
+                                for (int k = 0; k < listeComptes.Count; k++)
+                                {
+                                    if (listeComptes[k].Identifiant == lignes[i].Sortie)
+                                    {
+                                        listeComptes[k].Solde += lignes[i].Solde;
+                                        trouver = true;
+                                        break;
+                                    }
+                                }
+                                if (trouver)
+                                    sortie += ";OK";
+                                else
+                                    sortie += ";KO";
+                            }
+                            else
+                            {
+                                sortie += ";KO";
+                            }
                         }
                         else if (lignes[i].Entree == "0" && lignes[i].Sortie != "0") // Deposer de l'argent
                         {
-                            Console.WriteLine($"{lignes[i].Identifiant} Deposer de l'argent");
+                            //Console.WriteLine($"{lignes[i].Identifiant} Deposer de l'argent");
+                            if (EstPresent(listeComptes, nouveauCompte)
+                                && nouvelleTransaction.DeposeArgent(listeComptes, lignes[i].Sortie ,lignes[i].Solde, lignes[i].Date))
+                            {
+                                bool trouver = false;
+                                for (int k = 0; k < listeComptes.Count; k++)
+                                {
+                                    if (listeComptes[k].Identifiant == lignes[i].Sortie)
+                                    {
+                                        listeComptes[k].Solde -= lignes[i].Solde;
+                                        trouver = true;
+                                        break;
+                                    }
+                                }
+                                if (trouver)
+                                    sortie += ";OK";
+                                else
+                                    sortie += ";KO";
+                            }
+                            else
+                            {
+                                sortie += ";KO";
+                            }
                         }
                         else if (lignes[i].Entree != "0" && lignes[i].Sortie != "0") // Virement & Prelevement
                         {
-                            Console.WriteLine($"{lignes[i].Identifiant} Virement & Prelevement");
+                            //Console.WriteLine($"{lignes[i].Identifiant} Virement & Prelevement");
+                            bool trouver = false;
+                            int indiceExpediteur = -1;
+                            int indicedestinataire = -1;
+                            for (int k = 0; k < listeComptes.Count; k++)
+                            {
+                                if (listeComptes[k].Identifiant == nouvelleTransaction.Expediteur)
+                                {
+                                    for (int l = 0; l < listeComptes.Count; l++)
+                                    {
+                                        if (listeComptes[l].Identifiant == nouvelleTransaction.Destinataire)
+                                        {
+                                            trouver = true;
+                                            indiceExpediteur = k;
+                                            indicedestinataire = l;
+                                        }
+                                    }
+                                }
+                            }
+                            if (trouver)
+                            {
+                                if (nouvelleTransaction.Montant > 0 && listeComptes[indicedestinataire].Solde > nouvelleTransaction.Montant)
+                                {
+                                    listeComptes[indiceExpediteur].Solde += nouvelleTransaction.Montant;
+                                    listeComptes[indicedestinataire].Solde -= nouvelleTransaction.Montant;
+                                    sortie += ";OK";
+                                }
+                                else
+                                {
+                                    sortie += ";KO";
+                                }
+                            }
+                            else
+                            {
+                                sortie += ";KO";
+                            } 
                         }
                         else
                         {
