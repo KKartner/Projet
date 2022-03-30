@@ -49,7 +49,7 @@ namespace Projet_Partie2
 
                         if (lignes[i].Entree != "0" && lignes[i].Sortie == "0") // Creation d'un compte
                         {
-                            Console.WriteLine("Creation d'un compte");
+                            Console.WriteLine($"{lignes[i].Identifiant} Creation d'un compte");
                             if (!EstPresent(listeComptes, nouveauCompte)
                                 && nouveauCompte.CreationCompte(maListeGestionnaire, lignes[i].Entree))
                             {
@@ -65,19 +65,24 @@ namespace Projet_Partie2
                         }
                         else if (lignes[i].Entree == "0" && lignes[i].Sortie != "0") // Cloture d'un compte
                         {
-                            Console.WriteLine("Cloture d'un compte");
+                            Console.WriteLine($"{lignes[i].Identifiant} Cloture d'un compte");
                             if (EstPresent(listeComptes, nouveauCompte)
                                 && nouveauCompte.ClotureCompte(listeComptes, lignes[i].Sortie, lignes[i].Date))
                             {
-                                sortie += ";OK";
+                                bool trouver = false;
                                 for (int k = 0; k < listeComptes.Count; k++)
                                 {
                                     if (listeComptes[k].Identifiant == lignes[i].Identifiant)
                                     {
                                         listeComptes[k].DateCloture = lignes[i].Date;
+                                        trouver = true;
                                         break;
                                     }
                                 }
+                                if (trouver)
+                                    sortie += ";OK";
+                                else
+                                    sortie += ";KO";
                             }
                             else
                             {
@@ -86,20 +91,27 @@ namespace Projet_Partie2
                         }
                         else if (lignes[i].Entree != "0" && lignes[i].Sortie != "0") // Changement de gestion
                         {
-                            Console.WriteLine("Changement de gestion");
+                            Console.WriteLine($"{lignes[i].Identifiant} Changement de gestion");
                             if (EstPresent(listeComptes, nouveauCompte)
                                 && nouveauCompte.GestionCompte(maListeGestionnaire, lignes[i].Entree)
                                 && nouveauCompte.GestionCompte(maListeGestionnaire, lignes[i].Sortie))
                             {
+                                bool trouver = false;
                                 for (int k = 0; k < listeComptes.Count; k++)
                                 {
-                                    if (listeComptes[k].Identifiant == lignes[i].Identifiant)
+                                    if (listeComptes[k].Identifiant == lignes[i].Identifiant
+                                        && listeComptes[k].Appartenance == lignes[i].Entree
+                                        && listeComptes[k].DateCloture == DateTime.MinValue)
                                     {
                                         listeComptes[k].Appartenance = lignes[i].Sortie;
+                                        trouver = true;
                                         break;
                                     }
                                 }
-                                sortie += ";OK";
+                                if (trouver)
+                                    sortie += ";OK";
+                                else
+                                    sortie += ";KO";
                             }
                             else
                             {
@@ -116,15 +128,15 @@ namespace Projet_Partie2
 
                         if (lignes[i].Entree != "0" && lignes[i].Sortie == "0") // Retirer de l'argent
                         {
-                            Console.WriteLine("Retirer de l'argent");
+                            Console.WriteLine($"{lignes[i].Identifiant} Retirer de l'argent");
                         }
                         else if (lignes[i].Entree == "0" && lignes[i].Sortie != "0") // Deposer de l'argent
                         {
-                            Console.WriteLine("Deposer de l'argent");
+                            Console.WriteLine($"{lignes[i].Identifiant} Deposer de l'argent");
                         }
                         else if (lignes[i].Entree != "0" && lignes[i].Sortie != "0") // Virement & Prelevement
                         {
-                            Console.WriteLine("Virement & Prelevement");
+                            Console.WriteLine($"{lignes[i].Identifiant} Virement & Prelevement");
                         }
                         else
                         {
