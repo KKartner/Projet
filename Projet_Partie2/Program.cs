@@ -360,7 +360,7 @@ namespace Projet_Partie2
                                     bool trouver = false;
                                     for (int k = 0; k < listeComptes.Count; k++)
                                     {
-                                        if (listeComptes[k].Identifiant == lignes[i].Entree && listeComptes[k].HistoriqueCompte(listeComptes[k], lignes[i].Solde))
+                                        if (listeComptes[k].Identifiant == lignes[i].Entree && listeComptes[k].HistoriqueCompte(listeComptes[k], lignes[i].Solde, lignes[i].Date))
                                         {
                                             listeComptes[k].Solde += lignes[i].Solde;
                                             listeComptes[k].HistoriqueDateTransaction.Add(lignes[i].Date);
@@ -444,7 +444,9 @@ namespace Projet_Partie2
                                 }
                                 if (trouver)
                                 {
-                                    if (nouvelleTransaction.Montant > 0 && listeComptes[indicedestinataire].Solde > nouvelleTransaction.Montant && listeComptes[indicedestinataire].HistoriqueCompte(listeComptes[indicedestinataire], lignes[i].Solde))
+                                    if (nouvelleTransaction.Montant > 0 
+                                        && listeComptes[indicedestinataire].Solde > nouvelleTransaction.Montant 
+                                        && listeComptes[indicedestinataire].HistoriqueCompte(listeComptes[indicedestinataire], lignes[i].Solde, lignes[i].Date))
                                     {
                                         listeComptes[indiceExpediteur].Solde += nouvelleTransaction.Montant;
                                         listeComptes[indicedestinataire].Solde -= nouvelleTransaction.Montant;

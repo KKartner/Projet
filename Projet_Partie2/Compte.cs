@@ -63,28 +63,26 @@ namespace Projet_Partie2
             return false;
         }
 
-        public bool HistoriqueCompte(Compte unComptes, float nouvelleTransaction)
+        public bool HistoriqueCompte(Compte compte, float montant, DateTime dateTransaction)
         {
             float somme = 0;
-            if (unComptes.HistoriqueDateTransaction.Count != 0 && unComptes.HistoriqueDateTransaction.Count > 10) // +10 de transaction dans l'historique
+            if (compte.HistoriqueDateTransaction.Count != 0) 
             {
-                for (int i = unComptes.HistoriqueSommeTransaction.Count; i >= unComptes.HistoriqueSommeTransaction.Count - 10; i--)
+                TimeSpan limite = new TimeSpan(7, 0, 0, 0, 0);
+                DateTime derniereTransaction = dateTransaction - limite;
+
+                for (int i = compte.HistoriqueSommeTransaction.Count - 1; i > -1; i--)
                 {
-                    somme += unComptes.HistoriqueSommeTransaction[i];
+                    if (compte.HistoriqueDateTransaction[i] >= derniereTransaction)
+                    {
+                        somme += compte.HistoriqueSommeTransaction[i];
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
-                if (somme + nouvelleTransaction <= 2000)
-                {
-                    return true;
-                }
-                return false;
-            }
-            else if (unComptes.HistoriqueDateTransaction.Count != 0 && unComptes.HistoriqueDateTransaction.Count <= 10) // -10 de transaction dans l'historique
-            {
-                for (int i = 0; i < unComptes.HistoriqueSommeTransaction.Count; i++)
-                {
-                    somme += unComptes.HistoriqueSommeTransaction[i];
-                }
-                if (somme + nouvelleTransaction <= 2000)
+                if (somme + montant <= 2000)
                 {
                     return true;
                 }
