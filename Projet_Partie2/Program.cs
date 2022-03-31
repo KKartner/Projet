@@ -242,6 +242,7 @@ namespace Projet_Partie2
                 string trxnPath = path + $@"\Transactions_{n}.txt";
 
                 List<Gestionnaire> maListeGestionnaire = CreateGestionary(mngrPath);
+                List<Compte> listeComptes = new List<Compte>();
 
                 List<LigneFichier> lignes = new List<LigneFichier>();
                 GetLines(acctPath, TypeFichier.Compte, lignes);
@@ -250,15 +251,15 @@ namespace Projet_Partie2
                 lignes = lignes.OrderBy(si => si.Date).ThenBy(si => si.Type).ToList();
 
                 List<string> sorties = new List<string>();
-                List<string> statistiquesLabel = new List<string>();
-                List<int> statistiquesChiffre = new List<int>();
-                List<Compte> listeComptes = new List<Compte>();
-
+                
                 int nombreCompteCree = 0;
                 int nombreTotalTransaction = 0;
                 int nombreTotalTransSucces = 0;
                 int nombreTotalTransEchec = 0;
                 float sommeTotalTransaction = 0;
+
+                List<string> statistiquesLabel = new List<string>();
+                List<int> statistiquesChiffre = new List<int>();
 
                 for (int i = 0; i < lignes.Count; i++)
                 {
@@ -359,9 +360,11 @@ namespace Projet_Partie2
                                     bool trouver = false;
                                     for (int k = 0; k < listeComptes.Count; k++)
                                     {
-                                        if (listeComptes[k].Identifiant == lignes[i].Entree)
+                                        if (listeComptes[k].Identifiant == lignes[i].Entree && listeComptes[k].HistoriqueCompte(listeComptes[k], lignes[i].Solde))
                                         {
                                             listeComptes[k].Solde += lignes[i].Solde;
+                                            listeComptes[k].HistoriqueDateTransaction.Add(lignes[i].Date);
+                                            listeComptes[k].HistoriqueSommeTransaction.Add(lignes[i].Solde);
                                             sommeTotalTransaction += lignes[i].Solde;
                                             trouver = true;
                                             break;
@@ -441,10 +444,12 @@ namespace Projet_Partie2
                                 }
                                 if (trouver)
                                 {
-                                    if (nouvelleTransaction.Montant > 0 && listeComptes[indicedestinataire].Solde > nouvelleTransaction.Montant)
+                                    if (nouvelleTransaction.Montant > 0 && listeComptes[indicedestinataire].Solde > nouvelleTransaction.Montant && listeComptes[indicedestinataire].HistoriqueCompte(listeComptes[indicedestinataire], lignes[i].Solde))
                                     {
                                         listeComptes[indiceExpediteur].Solde += nouvelleTransaction.Montant;
                                         listeComptes[indicedestinataire].Solde -= nouvelleTransaction.Montant;
+                                        listeComptes[indicedestinataire].HistoriqueDateTransaction.Add(lignes[i].Date);
+                                        listeComptes[indicedestinataire].HistoriqueSommeTransaction.Add(lignes[i].Solde);
                                         sommeTotalTransaction += nouvelleTransaction.Montant;
                                         sortie += ";OK";
                                         nombreTotalTransSucces++;

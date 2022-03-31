@@ -53,10 +53,5 @@ namespace Projet_Partie2
             }
             return false;
         }
-
-        public bool VirementPrevelement()
-        {
-            return false;
-        }
     }
 }

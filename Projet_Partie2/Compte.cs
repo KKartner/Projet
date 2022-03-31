@@ -11,6 +11,8 @@ namespace Projet_Partie2
         public string Identifiant { get; set; }
         public DateTime DateOuverture { get; set; }
         public DateTime DateCloture { get; set; }
+        public List<DateTime> HistoriqueDateTransaction { get; set; }
+        public List<float> HistoriqueSommeTransaction { get; set; }
         public float Solde { get; set; }
         public string Appartenance { get; set; }
 
@@ -19,6 +21,8 @@ namespace Projet_Partie2
             Identifiant = identifiant;
             DateOuverture = date;
             DateCloture = DateTime.MinValue;
+            HistoriqueDateTransaction = new List<DateTime>();
+            HistoriqueSommeTransaction = new List<float>();
             Solde = solde;
             Appartenance = appartenance;
         }
@@ -57,6 +61,39 @@ namespace Projet_Partie2
                 }
             }
             return false;
+        }
+
+        public bool HistoriqueCompte(Compte unComptes, float nouvelleTransaction)
+        {
+            float somme = 0;
+            if (unComptes.HistoriqueDateTransaction.Count != 0 && unComptes.HistoriqueDateTransaction.Count > 10) // +10 de transaction dans l'historique
+            {
+                for (int i = unComptes.HistoriqueSommeTransaction.Count; i >= unComptes.HistoriqueSommeTransaction.Count - 10; i--)
+                {
+                    somme += unComptes.HistoriqueSommeTransaction[i];
+                }
+                if (somme + nouvelleTransaction <= 2000)
+                {
+                    return true;
+                }
+                return false;
+            }
+            else if (unComptes.HistoriqueDateTransaction.Count != 0 && unComptes.HistoriqueDateTransaction.Count <= 10) // -10 de transaction dans l'historique
+            {
+                for (int i = 0; i < unComptes.HistoriqueSommeTransaction.Count; i++)
+                {
+                    somme += unComptes.HistoriqueSommeTransaction[i];
+                }
+                if (somme + nouvelleTransaction <= 2000)
+                {
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }
