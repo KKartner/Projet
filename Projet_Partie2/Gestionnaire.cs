@@ -19,30 +19,5 @@ namespace Projet_Partie2
             Type = type;
             NbTransaction = nbTransaction;
         }
-
-        public List<Gestionnaire> CreateGestionary(string input)
-        {
-            List<Gestionnaire> listeGestionnaires = new List<Gestionnaire>();
-            using (StreamReader sr = new StreamReader(input))
-            {
-                string lines;
-                while ((lines = sr.ReadLine()) != null)
-                {
-                    Gestionnaire nouveauGestionnaire = new Gestionnaire("", "", 0);
-                    string[] line = lines.Split(';');
-
-                    int nombreTransaction = LigneFichier.ConvertStringToInt(line[2]);
-                    if (nombreTransaction != int.MinValue)
-                    {
-                        nouveauGestionnaire.Identifiant = line[0];
-                        nouveauGestionnaire.Type = line[1];
-                        nouveauGestionnaire.NbTransaction = nombreTransaction;
-                        listeGestionnaires.Add(nouveauGestionnaire);
-
-                    }
-                }
-            }
-            return listeGestionnaires;
-        }
     }
 }
