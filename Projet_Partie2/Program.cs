@@ -250,7 +250,15 @@ namespace Projet_Partie2
                 lignes = lignes.OrderBy(si => si.Date).ThenBy(si => si.Type).ToList();
 
                 List<string> sorties = new List<string>();
+                List<string> statistiquesLabel = new List<string>();
+                List<int> statistiquesChiffre = new List<int>();
                 List<Compte> listeComptes = new List<Compte>();
+
+                int nombreCompteCree = 0;
+                int nombreTotalTransaction = 0;
+                int nombreTotalTransSucces = 0;
+                int nombreTotalTransEchec = 0;
+                float sommeTotalTransaction = 0;
 
                 for (int i = 0; i < lignes.Count; i++)
                 {
@@ -269,6 +277,7 @@ namespace Projet_Partie2
                                     && nouveauCompte.CreationCompte(maListeGestionnaire, lignes[i].Entree))
                                 {
                                     sortie += ";OK";
+                                    nombreCompteCree++;
                                     nouveauCompte.Appartenance = lignes[i].Entree;
                                     listeComptes.Add(nouveauCompte);
                                 }
@@ -340,33 +349,42 @@ namespace Projet_Partie2
                             break;
                         case TypeFichier.Transaction:
                             Transaction nouvelleTransaction = new Transaction(lignes[i].Identifiant, lignes[i].Date, lignes[i].Solde, lignes[i].Entree, lignes[i].Sortie);
-                            if (lignes[i].Entree != "" && lignes[i].Sortie == "") // Retirer de l'argent
+                            nombreTotalTransaction++;
+                            if (lignes[i].Entree != "" || lignes[i].Entree != "0" && lignes[i].Sortie == "" || lignes[i].Sortie == "0") // Retirer de l'argent
                             {
                                 //Console.WriteLine($"{lignes[i].Identifiant} Retirer de l'argent");
                                 if (ExpediteurTransaction(listeComptes, nouvelleTransaction)
-                                    && nouvelleTransaction.RetirerArgent(listeComptes, lignes[i].Sortie, lignes[i].Solde, lignes[i].Date))
+                                    && nouvelleTransaction.RetirerArgent(listeComptes, lignes[i].Entree, lignes[i].Solde, lignes[i].Date))
                                 {
                                     bool trouver = false;
                                     for (int k = 0; k < listeComptes.Count; k++)
                                     {
-                                        if (listeComptes[k].Identifiant == lignes[i].Sortie)
+                                        if (listeComptes[k].Identifiant == lignes[i].Entree)
                                         {
                                             listeComptes[k].Solde += lignes[i].Solde;
+                                            sommeTotalTransaction += lignes[i].Solde;
                                             trouver = true;
                                             break;
                                         }
                                     }
                                     if (trouver)
+                                    {
                                         sortie += ";OK";
+                                        nombreTotalTransSucces++;
+                                    }  
                                     else
+                                    {
                                         sortie += ";KO";
+                                        nombreTotalTransEchec++;
+                                    }  
                                 }
                                 else
                                 {
                                     sortie += ";KO";
+                                    nombreTotalTransEchec++;
                                 }
                             }
-                            else if (lignes[i].Entree == "" && lignes[i].Sortie != "") // Deposer de l'argent
+                            else if (lignes[i].Entree == "" || lignes[i].Entree == "0" && lignes[i].Sortie != "" || lignes[i].Sortie != "0") // Deposer de l'argent
                             {
                                 //Console.WriteLine($"{lignes[i].Identifiant} Deposer de l'argent");
                                 if (DestinataireTransaction(listeComptes, nouvelleTransaction)
@@ -378,18 +396,26 @@ namespace Projet_Partie2
                                         if (listeComptes[k].Identifiant == lignes[i].Sortie)
                                         {
                                             listeComptes[k].Solde -= lignes[i].Solde;
+                                            sommeTotalTransaction += lignes[i].Solde;
                                             trouver = true;
                                             break;
                                         }
                                     }
                                     if (trouver)
+                                    {
                                         sortie += ";OK";
+                                        nombreTotalTransSucces++;
+                                    }
                                     else
+                                    {
                                         sortie += ";KO";
+                                        nombreTotalTransEchec++;
+                                    }
                                 }
                                 else
                                 {
                                     sortie += ";KO";
+                                    nombreTotalTransEchec++;
                                 }
                             }
                             else if (lignes[i].Entree != "" && lignes[i].Sortie != "") // Virement & Prelevement
@@ -419,16 +445,20 @@ namespace Projet_Partie2
                                     {
                                         listeComptes[indiceExpediteur].Solde += nouvelleTransaction.Montant;
                                         listeComptes[indicedestinataire].Solde -= nouvelleTransaction.Montant;
+                                        sommeTotalTransaction += nouvelleTransaction.Montant;
                                         sortie += ";OK";
+                                        nombreTotalTransSucces++;
                                     }
                                     else
                                     {
                                         sortie += ";KO";
+                                        nombreTotalTransEchec++;
                                     }
                                 }
                                 else
                                 {
                                     sortie += ";KO";
+                                    nombreTotalTransEchec++;
                                 }
                             }
                             else
@@ -441,11 +471,26 @@ namespace Projet_Partie2
                     }
                     sorties.Add(sortie);
                 }
+                statistiquesLabel.Add("Nombre de Compte : ");
+                statistiquesChiffre.Add(nombreCompteCree);
+                statistiquesLabel.Add("Nombre de Transaction : ");
+                statistiquesChiffre.Add(nombreTotalTransaction);
+                statistiquesLabel.Add("Nombre de Transaction reussites : ");
+                statistiquesChiffre.Add(nombreTotalTransSucces);
+                statistiquesLabel.Add("Nombre de Transaction d'echecs : ");
+                statistiquesChiffre.Add(nombreTotalTransEchec);
 
                 foreach (string s in sorties)
                 {
                     Console.WriteLine(s);
                 }
+                Console.WriteLine("");
+                Console.WriteLine("Statistiques");
+                for (int b = 0; b < statistiquesLabel.Count; b++)
+                {
+                    Console.WriteLine($"{statistiquesLabel[b]} {statistiquesChiffre[b]}");
+                }
+                Console.WriteLine($"Montant total des reussites {sommeTotalTransaction}");
                 Console.WriteLine("");
             }
 
