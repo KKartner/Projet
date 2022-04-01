@@ -42,79 +42,6 @@ namespace Projet_Partie2
                     switch (lignes[i].Type)
                     {
                         case TypeFichier.Transaction:
-                            Transaction nouvelleTransaction = new Transaction(lignes[i].Identifiant, lignes[i].Date, lignes[i].Solde, lignes[i].Entree, lignes[i].Sortie);
-                            nombreTotalTransaction++;
-                            if ((!string.IsNullOrWhiteSpace(lignes[i].Entree) && lignes[i].Entree != "0") && (string.IsNullOrWhiteSpace(lignes[i].Sortie) || lignes[i].Sortie == "0")) // Retirer de l'argent
-                            {
-                                //Console.WriteLine($"{lignes[i].Identifiant} Retirer de l'argent");
-                                if (ExpediteurTransaction(listeComptes, nouvelleTransaction)
-                                    && nouvelleTransaction.RetirerArgent(listeComptes, lignes[i].Entree, lignes[i].Solde, lignes[i].Date))
-                                {
-                                    bool trouver = false;
-                                    for (int k = 0; k < listeComptes.Count; k++)
-                                    {
-                                        if (listeComptes[k].Identifiant == lignes[i].Entree
-                                            && listeComptes[k].HistoriqueCompte(listeComptes[k], lignes[i].Solde, lignes[i].Date))
-                                        {
-                                            listeComptes[k].Solde += lignes[i].Solde;
-                                            listeComptes[k].HistoriqueDateTransaction.Add(lignes[i].Date);
-                                            listeComptes[k].HistoriqueSommeTransaction.Add(lignes[i].Solde);
-                                            sommeTotalTransaction += lignes[i].Solde;
-                                            trouver = true;
-                                            break;
-                                        }
-                                    }
-                                    if (trouver)
-                                    {
-                                        sortie += ";OK";
-                                        nombreTotalTransSucces++;
-                                    }
-                                    else
-                                    {
-                                        sortie += ";KO";
-                                        nombreTotalTransEchec++;
-                                    }
-                                }
-                                else
-                                {
-                                    sortie += ";KO";
-                                    nombreTotalTransEchec++;
-                                }
-                            }
-                            else if (lignes[i].Entree == "" || lignes[i].Entree == "0" && lignes[i].Sortie != "" || lignes[i].Sortie != "0") // Deposer de l'argent
-                            {
-                                //Console.WriteLine($"{lignes[i].Identifiant} Deposer de l'argent");
-                                if (DestinataireTransaction(listeComptes, nouvelleTransaction)
-                                    && nouvelleTransaction.DeposeArgent(listeComptes, lignes[i].Sortie, lignes[i].Solde, lignes[i].Date))
-                                {
-                                    bool trouver = false;
-                                    for (int k = 0; k < listeComptes.Count; k++)
-                                    {
-                                        if (listeComptes[k].Identifiant == lignes[i].Sortie)
-                                        {
-                                            listeComptes[k].Solde -= lignes[i].Solde;
-                                            sommeTotalTransaction += lignes[i].Solde;
-                                            trouver = true;
-                                            break;
-                                        }
-                                    }
-                                    if (trouver)
-                                    {
-                                        sortie += ";OK";
-                                        nombreTotalTransSucces++;
-                                    }
-                                    else
-                                    {
-                                        sortie += ";KO";
-                                        nombreTotalTransEchec++;
-                                    }
-                                }
-                                else
-                                {
-                                    sortie += ";KO";
-                                    nombreTotalTransEchec++;
-                                }
-                            }
                             else if (lignes[i].Entree != "" && lignes[i].Sortie != "") // Virement & Prelevement
                             {
                                 //Console.WriteLine($"{lignes[i].Identifiant} Virement & Prelevement");
@@ -172,27 +99,6 @@ namespace Projet_Partie2
                     }
                     sorties.Add(sortie);
                 }
-                statistiquesLabel.Add("Nombre de Compte : ");
-                statistiquesChiffre.Add(nombreCompteCree);
-                statistiquesLabel.Add("Nombre de Transaction : ");
-                statistiquesChiffre.Add(nombreTotalTransaction);
-                statistiquesLabel.Add("Nombre de Transaction reussites : ");
-                statistiquesChiffre.Add(nombreTotalTransSucces);
-                statistiquesLabel.Add("Nombre de Transaction d'echecs : ");
-                statistiquesChiffre.Add(nombreTotalTransEchec);
-
-                foreach (string s in sorties)
-                {
-                    Console.WriteLine(s);
-                }
-                Console.WriteLine("");
-                Console.WriteLine("Statistiques");
-                for (int b = 0; b < statistiquesLabel.Count; b++)
-                {
-                    Console.WriteLine($"{statistiquesLabel[b]} {statistiquesChiffre[b]}");
-                }
-                Console.WriteLine($"Montant total des reussites {sommeTotalTransaction}");
-                Console.WriteLine("");
                 **/
             }
 
