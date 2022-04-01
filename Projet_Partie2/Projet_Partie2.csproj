@@ -43,13 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compte.cs" />
-    <Compile Include="LigneFichier.cs" />
-    <Compile Include="Gestionnaire.cs" />
+    <Compile Include="BusinessLogic\Banque.cs" />
+    <Compile Include="BusinessLogic\Compte.cs" />
+    <Compile Include="BusinessLogic\Enums\TypeOperation.cs" />
+    <Compile Include="BusinessLogic\Enums\TypeTransaction.cs" />
+    <Compile Include="BusinessLogic\LigneFichier.cs" />
+    <Compile Include="BusinessLogic\Gestionnaire.cs" />
+    <Compile Include="BusinessLogic\Metrologie.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Transaction.cs" />
-    <Compile Include="TypeFichier.cs" />
+    <Compile Include="BusinessLogic\Transaction.cs" />
+    <Compile Include="BusinessLogic\Enums\TypeFichier.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

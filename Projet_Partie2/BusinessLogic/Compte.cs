@@ -71,15 +71,11 @@ namespace Projet_Partie2
                 TimeSpan limite = new TimeSpan(7, 0, 0, 0, 0);
                 DateTime derniereTransaction = dateTransaction - limite;
 
-                for (int i = compte.HistoriqueSommeTransaction.Count - 1; i > -1; i--)
+                for (int i = 0; i < compte.HistoriqueDateTransaction.Count; i++)
                 {
-                    if (compte.HistoriqueDateTransaction[i] >= derniereTransaction)
+                    if (compte.HistoriqueDateTransaction[i] >= derniereTransaction && compte.HistoriqueDateTransaction[i] <= dateTransaction)
                     {
                         somme += compte.HistoriqueSommeTransaction[i];
-                    }
-                    else
-                    {
-                        return false;
                     }
                 }
                 if (somme + montant <= 2000)
