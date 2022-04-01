@@ -25,50 +25,5 @@ namespace Projet_Partie2
             Sortie = sortie;
             Type = type;
         }
-
-        public List<Compte> CreateAccount(string input, List<Gestionnaire> listeGestionnaire)
-        {
-            List<Compte> listeComptes = new List<Compte>();
-            using (StreamReader sr = new StreamReader(input))
-            {
-                string lines;
-                while ((lines = sr.ReadLine()) != null)
-                {
-                    Compte nouveauCompte = new Compte("", DateTime.MinValue, 0, "");
-                    string[] line = lines.Split(';');
-
-                    for (int i = 0; i < listeGestionnaire.Count; i++)
-                    {
-                        if (listeGestionnaire[i].Identifiant == line[3])
-                        {
-                            if (line[4] == "0")
-                            {
-                                int monSolde = ConvertStringToInt(line[2]);
-                                if (monSolde != int.MinValue)
-                                {
-                                    nouveauCompte.Identifiant = line[0];
-                                    DateTime dateCreation = Convert.ToDateTime(line[1]);
-                                    nouveauCompte.DateOuverture = dateCreation;
-                                    nouveauCompte.Solde = monSolde;
-                                    listeComptes.Add(nouveauCompte);
-                                }
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-            return listeComptes;
-        }
-
-        public static int ConvertStringToInt(string StringConvert)
-        {
-            int convertion = int.MinValue;
-            if (int.TryParse(StringConvert.Replace('.', ','), out convertion))
-            {
-                return convertion;
-            }
-            return convertion;
-        }
     }
 }

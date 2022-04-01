@@ -88,7 +88,9 @@ namespace Projet_Partie2.BusinessLogic
             switch (GetOperationType(ligneFichier))
             {
                 case TypeOperation.Ouverture:
-                    if (!CompteExist(ligneFichier.Identifiant) && ligneFichier.Solde >= 0 && _gestionnaires.ContainsKey(ligneFichier.Entree))
+                    if (!CompteExist(ligneFichier.Identifiant) 
+                        && ligneFichier.Solde >= 0 
+                        && GestionnaireExist(ligneFichier.Entree))
                     {
                         _comptes.Add(ligneFichier.Identifiant, new Compte(ligneFichier.Identifiant, ligneFichier.Date, ligneFichier.Solde, ligneFichier.Entree));
                         return true;
@@ -97,9 +99,11 @@ namespace Projet_Partie2.BusinessLogic
                     {
                         return false;
                     }
-                    break;
                 case TypeOperation.Fermeture:
-                    if (CompteExist(ligneFichier.Identifiant) && _comptes[ligneFichier.Identifiant].DateOuverture <= ligneFichier.Date && _comptes[ligneFichier.Identifiant].Appartenance.Equals(ligneFichier.Sortie) && _gestionnaires.ContainsKey(ligneFichier.Sortie))
+                    if (CompteExist(ligneFichier.Identifiant) 
+                        && GestionnaireExist(ligneFichier.Sortie) 
+                        && _comptes[ligneFichier.Identifiant].DateOuverture <= ligneFichier.Date 
+                        && _comptes[ligneFichier.Identifiant].Appartenance.Equals(ligneFichier.Sortie))
                     {
                         _comptes[ligneFichier.Identifiant].DateCloture = ligneFichier.Date;
                         return true;
@@ -108,9 +112,11 @@ namespace Projet_Partie2.BusinessLogic
                     {
                         return false;
                     }
-                    break;
                 case TypeOperation.Cession:
-                    if (CompteExist(ligneFichier.Identifiant) && _gestionnaires.ContainsKey(ligneFichier.Entree) && _gestionnaires.ContainsKey(ligneFichier.Sortie) && _comptes[ligneFichier.Identifiant].Appartenance.Equals(ligneFichier.Entree))
+                    if (CompteExist(ligneFichier.Identifiant) 
+                        && GestionnaireExist(ligneFichier.Entree) 
+                        && GestionnaireExist(ligneFichier.Sortie) 
+                        && _comptes[ligneFichier.Identifiant].Appartenance.Equals(ligneFichier.Entree))
                     {
                         _comptes[ligneFichier.Identifiant].Appartenance = ligneFichier.Sortie;
                         return true;
@@ -119,16 +125,19 @@ namespace Projet_Partie2.BusinessLogic
                     {
                         return false;
                     }
-                    break;
                 default:
                     return false;
-                    break;
             }
         }
 
         private bool CompteExist(string id)
         {
             return _comptes.ContainsKey(id);
+        }
+
+        private bool GestionnaireExist(string id)
+        {
+            return _gestionnaires.ContainsKey(id);
         }
 
         private TypeOperation GetOperationType(LigneFichier ligneFichier)
@@ -153,11 +162,33 @@ namespace Projet_Partie2.BusinessLogic
             switch (GetTransactionType(ligneFichier))
             {
                 case TypeTransaction.Depot:
-                    break;
+                    if (CompteExist(ligneFichier.Identifiant) 
+                        && _comptes[ligneFichier.Identifiant].DateOuverture < ligneFichier.Date 
+                        && ligneFichier.Solde > 0)
+                    {
+                        _comptes[ligneFichier.Identifiant].Solde += ligneFichier.Solde;
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 case TypeTransaction.Retrait:
-                    break;
+                    if (CompteExist(ligneFichier.Identifiant) 
+                        && _comptes[ligneFichier.Identifiant].DateOuverture < ligneFichier.Date 
+                        && _comptes[ligneFichier.Identifiant].Solde >= ligneFichier.Solde
+                        && ligneFichier.Solde > 0 
+                        && ligneFichier.Solde <= 2000)
+                    {
+                        _comptes[ligneFichier.Identifiant].Solde -= ligneFichier.Solde;
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 case TypeTransaction.Virement:
-                    break;
+                    return false;
                 default:
                     return false;
             }
